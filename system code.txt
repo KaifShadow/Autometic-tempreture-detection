@@ -1,0 +1,39 @@
+#include <Wire.h>
+#include <Adafruit_MLX90614.h>
+#include <TM1637Display.h>
+#include "SoftwareSerial.h
+
+// read button
+  buttonValue = digitalRead(buttonPin);  
+               
+  if (buttonValue == LOW) {
+   // button has been pressed  
+   
+       beep(); // Play a beep
+ 
+          
+  // determines object temperature 
+  bodyTemperature=mlx.readObjectTempC(); 
+
+  // manual adjustment to temp reading
+  bodyTemperature=bodyTemperature+adjustTemp;
+
+  // send temperature to the 7 segment display
+  display.showNumberDec(bodyTemperature, false,4);
+
+  // Play mp3 doorbell sound
+  execute_CMD(0x0F,0x01,0x01);
+          
+  // compare temperature with high fever in celsius
+  if (bodyTemperature>38) {
+      Serial.println("High fever");    
+      // play mp3 alert sound 
+      execute_CMD(0x0F,0x01,0x02);      
+    }
+
+  Serial.println();
+
+  // delay until next push button reading
+  delay(5000);
+  
+  } // button pressed
